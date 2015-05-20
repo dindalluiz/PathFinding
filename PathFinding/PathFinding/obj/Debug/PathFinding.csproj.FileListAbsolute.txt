@@ -1,0 +1,8 @@
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\bin\Debug\PathFinding.exe.config
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\bin\Debug\PathFinding.exe
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\bin\Debug\PathFinding.pdb
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.csprojResolveAssemblyReference.cache
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.Properties.Resources.resources
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.csproj.GenerateResource.Cache
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.exe
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.pdb
