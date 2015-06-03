@@ -12,21 +12,54 @@ namespace PathFinding
         Vector4 pos;
         Pen colorPen;
         Brush colorBrush;
+        int h, g = 0;
 
         string type;
 
-        public Cube(int x, int y, int w, int h, Pen color, string type)
+        public Cube(){}
+
+        public Cube(int x, int y, int w, int h, Pen color, string type, int ha, int ga)
         {
             this.pos = new Vector4(x, y, w, h);
+            this.h = ha;
+            this.g = ga;
             this.colorPen = color;
             this.type = type;
         }
 
-        public Cube(int x, int y, int w, int h, Brush color, string type)
+        public Cube(int x, int y, int w, int h, Brush color, string type, int ha, int ga)
         {
             this.pos = new Vector4(x, y, w, h);
+            this.h = ha;
+            this.g = ga;
             this.colorBrush = color;
             this.type = type;
+        }
+
+        public int H
+        {
+            get
+            {
+                return h;
+            }
+            set
+            {
+                if (h == 0)
+                    h = value;
+            }
+        }
+
+        public int G
+        {
+            get
+            {
+                return g;
+            }
+            set
+            {
+                if (g == 0)
+                    g = value;
+            }
         }
 
         public string Type

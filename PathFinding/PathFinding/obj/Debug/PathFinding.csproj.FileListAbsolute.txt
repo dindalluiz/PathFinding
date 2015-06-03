@@ -6,3 +6,4 @@ C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathF
 C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.csproj.GenerateResource.Cache
 C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.exe
 C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.pdb
+C:\Users\Luiz.Torres\Desktop\PathFinding\PathFinding\PathFinding\obj\Debug\PathFinding.Form1.resources

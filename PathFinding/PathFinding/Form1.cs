@@ -14,27 +14,28 @@ namespace PathFinding
     {
         Map map = new Map();
 
-        List<int> adjAux;
-        List<List<int>> adj;
+        List<Cube> cubeAdjAux;
+        List<List<Cube>> cubeAdj;
 
-        Vector4 auxObj;
-        Vector4 auxPlayer;
+        List<Cube> path;
 
-        int cost;
-        Vector4 moveObj;
+        int cost = 1000;
 
         public Form1()
         {
-            adj = new List<List<int>>();
+
+            cubeAdj = new List<List<Cube>>();
             for (int i = 0; i < 3; i++)
             {
-                adjAux = new List<int>();
+                cubeAdjAux = new List<Cube>();
                 for (int j = 0; j < 3; j++)
                 {
-                    adjAux.Add(0);
+                    cubeAdjAux.Add(new Cube());
                 }
-                adj.Add(adjAux);
+                cubeAdj.Add(cubeAdjAux);
             }
+
+            this.path = new List<Cube>();
 
             InitializeComponent();
 
@@ -49,101 +50,130 @@ namespace PathFinding
 
             Paint += new PaintEventHandler(Draw);
 
-            map.AddElement(3, 3, "Player", Brushes.Red);
-            map.AddElement(9, 9, "Objetivo", Brushes.Blue);
+            map.AddElement(2, 2, "Player", Brushes.Red);
+            map.AddElement(2, 9, "Objetivo", Brushes.Blue);
             map.AddElement(4, 4, "Wall", Brushes.Green);
             map.AddElement(3, 4, "Wall", Brushes.Green);
+            map.AddElement(5, 4, "Wall", Brushes.Green);
+            map.AddElement(6, 4, "Wall", Brushes.Green);
+            map.AddElement(7, 4, "Wall", Brushes.Green);
 
-            CalcAdj();
-            MovePlayer();
+            AddPath();
         }
 
-        int Distance()
+        void AddPath()
         {
-            foreach (List<Cube> c in map.GetMap())
+            if(path.Count == 0)
             {
-                foreach (Cube a in c)
-                {
-                    if(a.Type == "Objetivo")
-                    {
-                        auxObj = a.Pos;
-                    }
-                }
+                path.Add(map.GetElement("Player"));
+                CalcAdj();
+                Distance();
+                return;
             }
+            this.cost = 10000;
+            Cube aux = new Cube();
 
-            foreach (List<Cube> c in map.GetMap())
+            for (int i = 0; i < 3; i++)
             {
-                foreach (Cube a in c)
+                for (int j = 0; j < 3; j++)
                 {
-                    if (a.Type == "Player")
+                    Console.WriteLine(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G));
+                    if(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G) < this.cost)
                     {
-                        auxPlayer = a.Pos;
+                        this.cost = cubeAdj[i][j].H + cubeAdj[i][j].G;
+                        aux = cubeAdj[i][j];
                     }
                 }
             }
+            path.Add(aux);
+            CalcAdj();
+            Distance();
+
+            Cube player = map.GetElement("Player");
+
+            map.UpdateElement(player.Pos.X()/20, player.Pos.Y()/20, aux.Pos.X()/20, aux.Pos.Y()/20, "Player", Brushes.Red);
+        }
+
+        void Distance()
+        {
+            Vector4 auxObj = map.GetElement("Objetivo").Pos;
 
             int totalCount;
+            
+            for (int i = 0; i < 3; i++) 
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    totalCount =  Math.Abs((((auxObj.X() / 20) - (cubeAdj[i][j].Pos.X() / 20)) * 10)) +  Math.Abs((((auxObj.Y() / 20) - (cubeAdj[i][j].Pos.Y() / 20)) * 10));
+                    cubeAdj[i][j].G = totalCount;
+                }
+            }
 
-            totalCount = (((auxObj.X() / 20) - (auxPlayer.X() / 20)) * 10) + (((auxObj.Y() / 20) - (auxPlayer.Y() / 20)) * 10);
-            return totalCount;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                   //Console.WriteLine(cubeAdj[i][j].G);
+                }
+            }
         }
 
         void CalcAdj()
         {
-            foreach (List<Cube> c in map.GetMap())
-            {
-                foreach (Cube a in c)
+             for (int i = 0; i < 3; i++)
+             {
+                for (int j = 0; j < 3; j++)
                 {
-                    if(a.Type == "Player")
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            for (int j = 0; j < 3; j++)
-                            {
-                                adj[i][j] = map.GetElement(i, j, (a.Pos.X()-20)/20, (a.Pos.Y()-20)/20);
-                            }
-                        }
-                    }
+                    cubeAdj[i][j] = map.GetCubesAdjacents(i, j, (path[path.Count-1].Pos.X()-20) / 20, (path[path.Count-1].Pos.Y()-20) / 20);
+                    cubeAdj[i][j].H = map.GetValueAdjacents(i, j, (path[path.Count-1].Pos.X()-20) / 20, (path[path.Count-1].Pos.Y()-20) / 20);
                 }
-            }
+             }
 
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Console.WriteLine(adj[i][j]);
+                    //Console.WriteLine(cubeAdj[i][j].H);
                 }
             }
         }
 
-        void MovePlayer()
-        {
-            foreach (List<Cube> c in map.GetMap())
-            {
-                foreach (Cube a in c)
-                {
-                    if (a.Type == "Player")
-                    {
-                        auxPlayer = a.Pos;
-                    }
-                }
-            }
-
-            this.cost = 1000;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (adj[i][j] + Distance() < cost)
-                    {
-                        cost = adj[i][j] + Distance();
-                        moveObj = new Vector4(i, j, 0, 0);
-                    }
-                }
-            }
-            moveObj = new Vector4(1, 2,0,0);
-            map.UpdateElement(auxPlayer.X() / 20, auxPlayer.Y() / 20, moveObj.X(), moveObj.Y(), "Player", Brushes.Red);
-        }
+        //void MovePlayer()
+        //{
+        //    foreach (List<Cube> c in map.GetMap())
+        //    {
+        //        foreach (Cube a in c)
+        //        {
+        //            if (a.Type == "Player")
+        //            {
+        //                auxPlayer = a.Pos;
+        //            }
+        //        }
+        //    }
+        //    this.cost = 1000;
+        //    foreach (List<Cube> c in map.GetMap())
+        //    {
+        //        foreach (Cube a in c)
+        //        {
+        //            if (a.Type == "Player")
+        //            {
+        //                for (int i = 0; i < 3; i++)
+        //                {
+        //                    for (int j = 0; j < 3; j++)
+        //                    {
+        //                        Console.WriteLine(adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20)));
+        //                        if ( adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20)) < this.cost)
+        //                        {
+        //                            this.cost = adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20));
+        //                            moveObj = new Vector4(i, j, 0, 0);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    map.UpdateElement(auxPlayer.X() / 20, auxPlayer.Y() / 20, moveObj.X(), moveObj.Y(), "Player", Brushes.Red);
+        //}
 
         void Update(object sender, EventArgs e)
         {
@@ -153,6 +183,12 @@ namespace PathFinding
         void Draw(Object sender, PaintEventArgs PaintNow)
         {
             map.Draw(PaintNow.Graphics);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //MovePlayer();
+            AddPath();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace PathFinding
         string type;
 
         int aux;
+        Cube cubeAux;
 
         public Map()
         {
@@ -29,7 +30,7 @@ namespace PathFinding
                 cubes = new List<Cube>();
                 for (int j = 1; j <= 10; j++)
                 {
-                    cubes.Add(new Cube(20 * i, 20 * j, 20, 20, Pens.Black, "Chão"));
+                    cubes.Add(new Cube(20 * i, 20 * j, 20, 20, Pens.Black, "Chão", 0, 0));
                 }
                 map.Add(cubes);
             }
@@ -46,12 +47,30 @@ namespace PathFinding
             map[x - 1][y - 1].SetColor(color);
         }
 
+        public Cube GetElement(string type)
+        {
+            foreach (List<Cube> c in map)
+            {
+                foreach (Cube a in c)
+                {
+                    if (a.Type == type)
+                    {
+                        return a;
+                    }
+                }
+            }
+            return new Cube();
+        }
+
         public void UpdateElement(int x, int y, int toX, int toY, string type, Brush color)
         {
             map[x - 1][y - 1].Type = "Chão";
             map[x - 1][y - 1].SetColor(Pens.Black);
 
-            if (toX == 0 && toY == 0)
+            map[toX - 1][toY - 1].Type = type;
+            map[toX - 1][toY - 1].SetColor(color);
+
+            /*if (toX == 0 && toY == 0)
             {
                 map[x - 2][y - 2].Type = type;
                 map[x - 2][y - 2].SetColor(color);
@@ -95,10 +114,10 @@ namespace PathFinding
             {
                 map[x][y].Type = type;
                 map[x][y].SetColor(color);
-            }
+            }*/
         }
 
-        public int GetElement(int x, int y, int posX, int posY)
+        public int GetValueAdjacents(int x, int y, int posX, int posY)
         {
             if(x==0&&y==0)
             {
@@ -110,7 +129,7 @@ namespace PathFinding
             }
             else if (x == 0 && y == 2)
             {
-                type = map[1 + posX][posY - 1].Type;
+                type = map[posX+1][posY - 1].Type;
             }
             else if (x == 1 && y == 0)
             {
@@ -151,11 +170,53 @@ namespace PathFinding
                case "Chão":
                    return 10 + aux;
                case "Objetivo":
-                   return 10 + aux;
+                   return 5 + aux;
                case "Wall":
-                   return 20+aux;
+                   return 1000+aux;
            }
            return 100;
+        }
+
+        public Cube GetCubesAdjacents(int x, int y, int posX, int posY)
+        {
+            if (x == 0 && y == 0)
+            {
+                cubeAux = map[posX - 1][posY - 1];
+            }
+            else if (x == 0 && y == 1)
+            {
+                cubeAux = map[x][posY - 1];
+            }
+            else if (x == 0 && y == 2)
+            {
+                cubeAux = map[posX + 1][posY - 1];
+            }
+            else if (x == 1 && y == 0)
+            {
+                cubeAux = map[posX - 1][y];
+            }
+            else if (x == 1 && y == 1)
+            {
+                cubeAux = map[x][y];
+            }
+            else if (x == 1 && y == 2)
+            {
+                cubeAux = map[1 + posX][y];
+            }
+            else if (x == 2 && y == 0)
+            {
+                cubeAux = map[posX - 1][1 + posY];
+            }
+            else if (x == 2 && y == 1)
+            {
+                cubeAux = map[x][1 + posY];
+            }
+            else if (x == 2 && y == 2)
+            {
+                cubeAux = map[1 + posX][1 + posY];
+            }
+
+            return cubeAux;
         }
 
         public void Draw(Graphics g)
