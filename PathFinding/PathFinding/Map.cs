@@ -17,6 +17,9 @@ namespace PathFinding
         int aux;
         Cube cubeAux;
 
+        int column = 10;
+        int row = 10;
+
         public Map()
         {
             ResetMap();
@@ -25,14 +28,30 @@ namespace PathFinding
         void ResetMap()
         {
             map = new List<List<Cube>>();
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= row; i++)
             {
                 cubes = new List<Cube>();
-                for (int j = 1; j <= 10; j++)
+                for (int j = 1; j <= column; j++)
                 {
                     cubes.Add(new Cube(20 * i, 20 * j, 20, 20, Pens.Black, "Chão", 0, 0));
                 }
                 map.Add(cubes);
+            }
+        }
+
+        public int Row
+        {
+            get
+            {
+                return row;
+            }
+        }
+
+        public int Column
+        {
+            get
+            {
+                return column;
             }
         }
 

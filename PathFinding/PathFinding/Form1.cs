@@ -77,7 +77,7 @@ namespace PathFinding
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Console.WriteLine(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G));
+                    Console.WriteLine(i+","+j+":"+Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G));
                     if(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G) < this.cost)
                     {
                         this.cost = cubeAdj[i][j].H + cubeAdj[i][j].G;
@@ -120,14 +120,24 @@ namespace PathFinding
 
         void CalcAdj()
         {
-             for (int i = 0; i < 3; i++)
-             {
-                for (int j = 0; j < 3; j++)
+            for (int h = 0; h < map.Row; h++)
+            {
+                for (int w = 0; w < map.Column; w++)
                 {
-                    cubeAdj[i][j] = map.GetCubesAdjacents(i, j, (path[path.Count-1].Pos.X()-20) / 20, (path[path.Count-1].Pos.Y()-20) / 20);
-                    cubeAdj[i][j].H = map.GetValueAdjacents(i, j, (path[path.Count-1].Pos.X()-20) / 20, (path[path.Count-1].Pos.Y()-20) / 20);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            /*cubeAdj[i][j] = map.GetCubesAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20);
+                            map.GetMap()[0][0].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
+                            cubeAdj[i][j].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
+                             */
+
+                            map.GetMap()[h][w].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
+                        }
+                    }
                 }
-             }
+            }
 
             for (int i = 0; i < 3; i++)
             {
