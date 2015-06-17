@@ -14,6 +14,8 @@ namespace PathFinding
         Brush colorBrush;
         int h, g = 0;
 
+        bool w = true;
+
         string type;
 
         public Cube(){}
@@ -34,6 +36,18 @@ namespace PathFinding
             this.g = ga;
             this.colorBrush = color;
             this.type = type;
+        }
+
+        public bool walkable
+        {
+            get
+            {
+                return w;
+            }
+            set
+            {
+                w = value;
+            }
         }
 
         public int H

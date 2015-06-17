@@ -9,8 +9,10 @@ namespace PathFinding
 {
     class Map
     {
+        #region Variables
         List<Cube> cubes;
         List<List<Cube>> map;
+        #endregion
 
         string type;
 
@@ -33,7 +35,7 @@ namespace PathFinding
                 cubes = new List<Cube>();
                 for (int j = 1; j <= column; j++)
                 {
-                    cubes.Add(new Cube(20 * i, 20 * j, 20, 20, Pens.Black, "Chão", 0, 0));
+                    cubes.Add(new Cube(40 * i, 40 * j, 40, 40, Pens.Black, "Chão", 0, 0));
                 }
                 map.Add(cubes);
             }
@@ -89,88 +91,44 @@ namespace PathFinding
             map[toX - 1][toY - 1].Type = type;
             map[toX - 1][toY - 1].SetColor(color);
 
-            /*if (toX == 0 && toY == 0)
-            {
-                map[x - 2][y - 2].Type = type;
-                map[x - 2][y - 2].SetColor(color);
-            }
-            else if (toX == 0 && toY == 1)
-            {
-                map[x-1][y - 2].Type = type;
-                map[x-1][y - 2].SetColor(color);
-            }
-            else if (toX == 0 && toY == 2)
-            {
-                map[x][y - 2].Type = type;
-                map[x][y - 2].SetColor(color);
-            }
-            else if (toX == 1 && toY == 0)
-            {
-                map[x - 2][y-1].Type = type;
-                map[x - 2][y-1].SetColor(color);
-            }
-            else if (toX == 1 && toY == 1)
-            {
-                map[x][y].Type = type;
-                map[x][y].SetColor(color);
-            }
-            else if (toX == 1 && toY == 2)
-            {
-                map[x][y - 2].Type = type;
-                map[x][y - 2].SetColor(color);
-            }
-            else if (toX == 2 && toY == 0)
-            {
-                map[x - 2][y].Type = type;
-                map[x - 2][y].SetColor(color);
-            }
-            else if (toX == 2 && toY == 1)
-            {
-                map[x-1][y].Type = type;
-                map[x-1][y].SetColor(color);
-            }
-            else if (toX == 2 && toY == 2)
-            {
-                map[x][y].Type = type;
-                map[x][y].SetColor(color);
-            }*/
+            map[toX - 1][toY - 1].walkable = false;
         }
 
         public int GetValueAdjacents(int x, int y, int posX, int posY)
         {
-            if(x==0&&y==0)
+            if (x == 0 && y == 0 && map[posX - 1][posY - 1].G == 0 && map[posX - 1][posY - 1].H == 0)
             {
                 type = map[posX-1][posY - 1].Type;
             }
-            else if (x == 0 && y == 1)
+            else if (x == 0 && y == 1 && map[posX][posY - 1].G == 0 && map[posX][posY - 1].H == 0)
             {
-                type = map[x][posY - 1].Type;
+                type = map[posX][posY - 1].Type;
             }
-            else if (x == 0 && y == 2)
+            else if (x == 0 && y == 2 && map[posX+1][posY - 1].G == 0 && map[posX+1][posY - 1].H == 0)
             {
                 type = map[posX+1][posY - 1].Type;
             }
-            else if (x == 1 && y == 0)
+            else if (x == 1 && y == 0 && map[posX -1][posY].G == 0 && map[posX - 1][posY].H == 0)
             {
-                type = map[posX - 1][y].Type;
+                type = map[posX - 1][posY].Type;
             }
-            else if (x == 1 && y == 1)
+            else if (x == 1 && y == 1 && map[posX][posY].G == 0 && map[posX][posY].H == 0)
             {
-                type = map[x][y].Type;
+                type = map[posX][posY].Type;
             }
-            else if (x == 1 && y == 2)
+            else if (x == 1 && y == 2 && map[posX + 1][posY].G == 0 && map[posX + 1][posY].H == 0)
             {
-                type = map[1 + posX][y].Type;
+                type = map[1 + posX][posY].Type;
             }
-            else if (x == 2 && y == 0)
+            else if (x == 2 && y == 0 && map[posX - 1][posY + 1].G == 0 && map[posX - 1][posY + 1].H == 0)
             {
                 type = map[posX - 1][1 + posY].Type;
             }
-            else if (x == 2 && y == 1)
+            else if (x == 2 && y == 1 && map[posX][posY + 1].G == 0 && map[posX][posY + 1].H == 0)
             {
-                type = map[x][1 + posY].Type;
+                type = map[posX][1 + posY].Type;
             }
-            else if (x == 2 && y == 2)
+            else if (x == 2 && y == 2 && map[posX + 1][posY + 1].G == 0 && map[posX + 1][posY + 1].H == 0)
             {
                 type = map[1+ posX][1+ posY].Type;
             }
@@ -193,7 +151,7 @@ namespace PathFinding
                case "Wall":
                    return 1000+aux;
            }
-           return 100;
+           return 200;
         }
 
         public Cube GetCubesAdjacents(int x, int y, int posX, int posY)
@@ -204,7 +162,7 @@ namespace PathFinding
             }
             else if (x == 0 && y == 1)
             {
-                cubeAux = map[x][posY - 1];
+                cubeAux = map[posX][posY - 1];
             }
             else if (x == 0 && y == 2)
             {
@@ -212,15 +170,15 @@ namespace PathFinding
             }
             else if (x == 1 && y == 0)
             {
-                cubeAux = map[posX - 1][y];
+                cubeAux = map[posX - 1][posY];
             }
             else if (x == 1 && y == 1)
             {
-                cubeAux = map[x][y];
+                cubeAux = map[posX][posY];
             }
             else if (x == 1 && y == 2)
             {
-                cubeAux = map[1 + posX][y];
+                cubeAux = map[1 + posX][posY];
             }
             else if (x == 2 && y == 0)
             {
@@ -228,7 +186,7 @@ namespace PathFinding
             }
             else if (x == 2 && y == 1)
             {
-                cubeAux = map[x][1 + posY];
+                cubeAux = map[posX][1 + posY];
             }
             else if (x == 2 && y == 2)
             {
@@ -240,11 +198,17 @@ namespace PathFinding
 
         public void Draw(Graphics g)
         {
+            Font drawFont = new Font("Arial", 10);
+
             foreach (List<Cube> c in map)
             {
                 foreach (Cube a in c)
                 {
                     a.Draw(g);
+
+                    g.DrawString(a.H.ToString(), drawFont, Brushes.Black, a.Pos.X(), a.Pos.Y()+25);
+                    g.DrawString(a.G.ToString(), drawFont, Brushes.Brown, a.Pos.X() + 20, a.Pos.Y() + 25);
+                    g.DrawString((a.G + a.H).ToString(), drawFont, Brushes.DarkViolet, a.Pos.X() + 18, a.Pos.Y());
                 }
             }
         }

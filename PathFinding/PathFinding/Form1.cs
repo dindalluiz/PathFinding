@@ -50,13 +50,15 @@ namespace PathFinding
 
             Paint += new PaintEventHandler(Draw);
 
-            map.AddElement(2, 2, "Player", Brushes.Red);
+            map.AddElement(8, 3, "Player", Brushes.Red);
             map.AddElement(2, 9, "Objetivo", Brushes.Blue);
-            map.AddElement(4, 4, "Wall", Brushes.Green);
             map.AddElement(3, 4, "Wall", Brushes.Green);
-            map.AddElement(5, 4, "Wall", Brushes.Green);
-            map.AddElement(6, 4, "Wall", Brushes.Green);
-            map.AddElement(7, 4, "Wall", Brushes.Green);
+            map.AddElement(3, 3, "Wall", Brushes.Green);
+            map.AddElement(4, 5, "Wall", Brushes.Green);
+            map.AddElement(3, 5, "Wall", Brushes.Green);
+            map.AddElement(5, 5, "Wall", Brushes.Green);
+            map.AddElement(6, 5, "Wall", Brushes.Green);
+            map.AddElement(7, 5, "Wall", Brushes.Green);
 
             AddPath();
         }
@@ -77,21 +79,23 @@ namespace PathFinding
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Console.WriteLine(i+","+j+":"+Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G));
-                    if(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G) < this.cost)
+                    if(Math.Abs(cubeAdj[i][j].H + cubeAdj[i][j].G) < this.cost && cubeAdj[i][j].walkable)
                     {
                         this.cost = cubeAdj[i][j].H + cubeAdj[i][j].G;
                         aux = cubeAdj[i][j];
                     }
                 }
             }
+
             path.Add(aux);
             CalcAdj();
             Distance();
 
+            Console.WriteLine(path[path.Count - 1].H);
+
             Cube player = map.GetElement("Player");
 
-            map.UpdateElement(player.Pos.X()/20, player.Pos.Y()/20, aux.Pos.X()/20, aux.Pos.Y()/20, "Player", Brushes.Red);
+            map.UpdateElement(player.Pos.X()/40, player.Pos.Y()/40, aux.Pos.X()/40, aux.Pos.Y()/40, "Player", Brushes.Red);
         }
 
         void Distance()
@@ -104,7 +108,7 @@ namespace PathFinding
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    totalCount =  Math.Abs((((auxObj.X() / 20) - (cubeAdj[i][j].Pos.X() / 20)) * 10)) +  Math.Abs((((auxObj.Y() / 20) - (cubeAdj[i][j].Pos.Y() / 20)) * 10));
+                    totalCount =  Math.Abs((((auxObj.X() / 40) - (cubeAdj[i][j].Pos.X() / 40)) * 10)) +  Math.Abs((((auxObj.Y() / 40) - (cubeAdj[i][j].Pos.Y() / 40)) * 10));
                     cubeAdj[i][j].G = totalCount;
                 }
             }
@@ -120,22 +124,12 @@ namespace PathFinding
 
         void CalcAdj()
         {
-            for (int h = 0; h < map.Row; h++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int w = 0; w < map.Column; w++)
+                for (int j = 0; j < 3; j++)
                 {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            /*cubeAdj[i][j] = map.GetCubesAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20);
-                            map.GetMap()[0][0].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
-                            cubeAdj[i][j].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
-                             */
-
-                            map.GetMap()[h][w].H = (map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 20) / 20, (path[path.Count - 1].Pos.Y() - 20) / 20)) + cubeAdj[i][j].H;
-                        }
-                    }
+                    cubeAdj[i][j] = map.GetCubesAdjacents(i, j, (path[path.Count - 1].Pos.X() - 40) / 40, (path[path.Count - 1].Pos.Y() - 40) / 40);
+                    cubeAdj[i][j].H = map.GetValueAdjacents(i, j, (path[path.Count - 1].Pos.X() - 40) / 40, (path[path.Count - 1].Pos.Y() - 40) / 40);
                 }
             }
 
@@ -147,43 +141,6 @@ namespace PathFinding
                 }
             }
         }
-
-        //void MovePlayer()
-        //{
-        //    foreach (List<Cube> c in map.GetMap())
-        //    {
-        //        foreach (Cube a in c)
-        //        {
-        //            if (a.Type == "Player")
-        //            {
-        //                auxPlayer = a.Pos;
-        //            }
-        //        }
-        //    }
-        //    this.cost = 1000;
-        //    foreach (List<Cube> c in map.GetMap())
-        //    {
-        //        foreach (Cube a in c)
-        //        {
-        //            if (a.Type == "Player")
-        //            {
-        //                for (int i = 0; i < 3; i++)
-        //                {
-        //                    for (int j = 0; j < 3; j++)
-        //                    {
-        //                        Console.WriteLine(adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20)));
-        //                        if ( adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20)) < this.cost)
-        //                        {
-        //                            this.cost = adj[i][j] + Distance(map.GetVector(i, j, (a.Pos.X() - 20) / 20, (a.Pos.Y() - 20) / 20));
-        //                            moveObj = new Vector4(i, j, 0, 0);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    map.UpdateElement(auxPlayer.X() / 20, auxPlayer.Y() / 20, moveObj.X(), moveObj.Y(), "Player", Brushes.Red);
-        //}
 
         void Update(object sender, EventArgs e)
         {
@@ -197,7 +154,6 @@ namespace PathFinding
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //MovePlayer();
             AddPath();
         }
     }
