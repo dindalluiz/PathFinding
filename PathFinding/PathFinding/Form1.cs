@@ -19,7 +19,11 @@ namespace PathFinding
 
         List<Cube> path;
 
+        bool playerMap, objMap, wallMap = false;
+
         int cost = 1000;
+
+        Vector4 obj;
 
         public Form1()
         {
@@ -50,17 +54,16 @@ namespace PathFinding
 
             Paint += new PaintEventHandler(Draw);
 
-            map.AddElement(8, 3, "Player", Brushes.Red);
+            /*map.AddElement(8, 3, "Player", Brushes.Red);
             map.AddElement(2, 9, "Objetivo", Brushes.Blue);
             map.AddElement(3, 4, "Wall", Brushes.Green);
+            map.AddElement(3, 2, "Wall", Brushes.Green);
             map.AddElement(3, 3, "Wall", Brushes.Green);
             map.AddElement(4, 5, "Wall", Brushes.Green);
             map.AddElement(3, 5, "Wall", Brushes.Green);
             map.AddElement(5, 5, "Wall", Brushes.Green);
             map.AddElement(6, 5, "Wall", Brushes.Green);
-            map.AddElement(7, 5, "Wall", Brushes.Green);
-
-            AddPath();
+            map.AddElement(7, 5, "Wall", Brushes.Green);*/
         }
 
         void AddPath()
@@ -72,7 +75,23 @@ namespace PathFinding
                 Distance();
                 return;
             }
+
+            Cube player = map.GetElement("Player");
+
+            if (player.Pos == obj)
+            {
+                this.button1.Enabled = false;
+                this.button2.Enabled = false;
+                this.button3.Enabled = false;
+                this.button4.Enabled = false;
+                return;
+            }
+
+            CalcAdj();
+            Distance();
+
             this.cost = 10000;
+
             Cube aux = new Cube();
 
             for (int i = 0; i < 3; i++)
@@ -88,14 +107,8 @@ namespace PathFinding
             }
 
             path.Add(aux);
-            CalcAdj();
-            Distance();
 
-            Console.WriteLine(path[path.Count - 1].H);
-
-            Cube player = map.GetElement("Player");
-
-            map.UpdateElement(player.Pos.X()/40, player.Pos.Y()/40, aux.Pos.X()/40, aux.Pos.Y()/40, "Player", Brushes.Red);
+            map.UpdateElement(player.Pos.X() / 40, player.Pos.Y() / 40, aux.Pos.X() / 40, aux.Pos.Y() / 40, "Player", Brushes.Red);
         }
 
         void Distance()
@@ -154,7 +167,77 @@ namespace PathFinding
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (map.GetElement("Player").Pos == obj)
+            {
+                MessageBox.Show("Já está no objetivo, reseta ae");
+                return;
+            }
+            else if (map.GetElement("Player").none == new Cube().none || map.GetElement("Objetivo").none == new Cube().none)
+            {
+                MessageBox.Show("Coloque o player e o objetivo no mapa");
+                return;
+            }
+
             AddPath();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (map.GetElement("Player").none == new Cube().none)
+            {
+                this.playerMap = true;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (map.GetElement("Objetivo").none == new Cube().none)
+            {
+                this.objMap = true;
+                obj = map.GetElement("Objetivo").Pos;
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.wallMap = true;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                double posX = e.X / 40;
+                double posY = e.Y / 40;
+                if(posX <=10 && posY <=10 && posX >= 1 && posY >= 1)
+                {
+                    if(this.playerMap)
+                    {
+                        this.playerMap = false;
+                        map.AddElement((int)Math.Round(posX), (int)Math.Round(posY), "Player", Brushes.Red);
+                    }
+                    if(this.objMap)
+                    {
+                        this.objMap = false;
+                        map.AddElement((int)Math.Round(posX), (int)Math.Round(posY), "Objetivo", Brushes.Blue);
+                        obj = map.GetElement("Objetivo").Pos;
+                    }
+                    if(this.wallMap)
+                    {
+                        this.wallMap = false;
+                        map.AddElement((int)Math.Round(posX), (int)Math.Round(posY), "Wall", Brushes.Green);
+                    }
+                }
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Form1.ActiveForm.Close();
+            //map.ResetMap();
+            //cubeAdj.Clear();
+            //path.Clear();
+            //this.cost = 1000;
         }
     }
 }

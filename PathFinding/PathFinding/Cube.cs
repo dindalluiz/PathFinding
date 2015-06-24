@@ -16,9 +16,11 @@ namespace PathFinding
 
         bool w = true;
 
+        bool n = false;
+
         string type;
 
-        public Cube(){}
+        public Cube() { this.n = true; }
 
         public Cube(int x, int y, int w, int h, Pen color, string type, int ha, int ga)
         {
@@ -27,6 +29,7 @@ namespace PathFinding
             this.g = ga;
             this.colorPen = color;
             this.type = type;
+            this.n = false;
         }
 
         public Cube(int x, int y, int w, int h, Brush color, string type, int ha, int ga)
@@ -36,6 +39,15 @@ namespace PathFinding
             this.g = ga;
             this.colorBrush = color;
             this.type = type;
+            this.n = false;
+        }
+
+        public bool none
+        {
+            get
+            {
+                return n;
+            }
         }
 
         public bool walkable

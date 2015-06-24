@@ -12,7 +12,6 @@ namespace PathFinding
         #region Variables
         List<Cube> cubes;
         List<List<Cube>> map;
-        #endregion
 
         string type;
 
@@ -21,13 +20,14 @@ namespace PathFinding
 
         int column = 10;
         int row = 10;
+        #endregion
 
         public Map()
         {
             ResetMap();
         }
 
-        void ResetMap()
+        public void ResetMap()
         {
             map = new List<List<Cube>>();
             for (int i = 1; i <= row; i++)
@@ -96,19 +96,24 @@ namespace PathFinding
 
         public int GetValueAdjacents(int x, int y, int posX, int posY)
         {
+            if(posX <0 || posY<0)
+            {
+                return 0;
+            }
+
             if (x == 0 && y == 0 && map[posX - 1][posY - 1].G == 0 && map[posX - 1][posY - 1].H == 0)
             {
-                type = map[posX-1][posY - 1].Type;
+                type = map[posX - 1][posY - 1].Type;
             }
             else if (x == 0 && y == 1 && map[posX][posY - 1].G == 0 && map[posX][posY - 1].H == 0)
             {
                 type = map[posX][posY - 1].Type;
             }
-            else if (x == 0 && y == 2 && map[posX+1][posY - 1].G == 0 && map[posX+1][posY - 1].H == 0)
+            else if (x == 0 && y == 2 && map[posX + 1][posY - 1].G == 0 && map[posX + 1][posY - 1].H == 0)
             {
-                type = map[posX+1][posY - 1].Type;
+                type = map[posX + 1][posY - 1].Type;
             }
-            else if (x == 1 && y == 0 && map[posX -1][posY].G == 0 && map[posX - 1][posY].H == 0)
+            else if (x == 1 && y == 0 && map[posX - 1][posY].G == 0 && map[posX - 1][posY].H == 0)
             {
                 type = map[posX - 1][posY].Type;
             }
@@ -130,7 +135,7 @@ namespace PathFinding
             }
             else if (x == 2 && y == 2 && map[posX + 1][posY + 1].G == 0 && map[posX + 1][posY + 1].H == 0)
             {
-                type = map[1+ posX][1+ posY].Type;
+                type = map[1 + posX][1 + posY].Type;
             }
 
             if (x == 0 && y == 0 || x == 0 && y == 2 || x == 2 && y == 2 || x == 2 && y == 0)
@@ -142,55 +147,58 @@ namespace PathFinding
                 aux = 0;
             }
 
-           switch(type)
-           {
-               case "Chão":
-                   return 10 + aux;
-               case "Objetivo":
-                   return 5 + aux;
-               case "Wall":
-                   return 1000+aux;
-           }
-           return 200;
+                switch (type)
+                {
+                    case "Chão":
+                        return 10 + aux;
+                    case "Objetivo":
+                        return 5 + aux;
+                    case "Wall":
+                        return 1000 + aux;
+                }
+           return 2000;
         }
 
         public Cube GetCubesAdjacents(int x, int y, int posX, int posY)
         {
-            if (x == 0 && y == 0)
+            if (posX-1>= 0 && posY-1 >= 0)
             {
-                cubeAux = map[posX - 1][posY - 1];
-            }
-            else if (x == 0 && y == 1)
-            {
-                cubeAux = map[posX][posY - 1];
-            }
-            else if (x == 0 && y == 2)
-            {
-                cubeAux = map[posX + 1][posY - 1];
-            }
-            else if (x == 1 && y == 0)
-            {
-                cubeAux = map[posX - 1][posY];
-            }
-            else if (x == 1 && y == 1)
-            {
-                cubeAux = map[posX][posY];
-            }
-            else if (x == 1 && y == 2)
-            {
-                cubeAux = map[1 + posX][posY];
-            }
-            else if (x == 2 && y == 0)
-            {
-                cubeAux = map[posX - 1][1 + posY];
-            }
-            else if (x == 2 && y == 1)
-            {
-                cubeAux = map[posX][1 + posY];
-            }
-            else if (x == 2 && y == 2)
-            {
-                cubeAux = map[1 + posX][1 + posY];
+                if (x == 0 && y == 0)
+                {
+                    cubeAux = map[posX - 1][posY - 1];
+                }
+                else if (x == 0 && y == 1)
+                {
+                    cubeAux = map[posX][posY - 1];
+                }
+                else if (x == 0 && y == 2)
+                {
+                    cubeAux = map[posX + 1][posY - 1];
+                }
+                else if (x == 1 && y == 0)
+                {
+                    cubeAux = map[posX - 1][posY];
+                }
+                else if (x == 1 && y == 1)
+                {
+                    cubeAux = map[posX][posY];
+                }
+                else if (x == 1 && y == 2)
+                {
+                    cubeAux = map[1 + posX][posY];
+                }
+                else if (x == 2 && y == 0)
+                {
+                    cubeAux = map[posX - 1][1 + posY];
+                }
+                else if (x == 2 && y == 1)
+                {
+                    cubeAux = map[posX][1 + posY];
+                }
+                else if (x == 2 && y == 2)
+                {
+                    cubeAux = map[1 + posX][1 + posY];
+                }
             }
 
             return cubeAux;
